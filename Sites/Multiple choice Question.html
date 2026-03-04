@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULKASEMI – Section A Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --card2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1b2e 0%, #0a0e1a 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    display: flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; font-family:var(--mono); font-size:11px; font-weight:700;
+    padding: 4px 10px; border-radius:4px; letter-spacing:1px;
+  }
+  header h1 { font-size:18px; font-weight:800; color:#fff; }
+  header p { font-size:12px; color:var(--muted); font-family:var(--mono); }
+
+  .exam-info { display:flex; gap:16px; flex-wrap:wrap; }
+  .info-chip {
+    background:var(--card2); border:1px solid var(--border);
+    border-radius:8px; padding:6px 14px; font-size:12px; font-family:var(--mono);
+    color:var(--accent);
+  }
+
+  /* NAV TABS */
+  .tabs { display:flex; gap:4px; padding:16px 24px 0; border-bottom:1px solid var(--border); background:var(--card); }
+  .tab {
+    padding:10px 20px; border-radius:8px 8px 0 0; cursor:pointer;
+    font-size:13px; font-weight:700; color:var(--muted); border:1px solid transparent;
+    border-bottom:none; transition:all .2s; font-family:var(--sans);
+  }
+  .tab.active { background:var(--bg); color:var(--accent); border-color:var(--border); }
+  .tab:hover:not(.active) { color:var(--text); background:var(--card2); }
+
+  /* MAIN */
+  main { padding:24px; max-width:960px; margin:0 auto; }
+
+  /* SECTION PANELS */
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  /* PROGRESS */
+  .progress-bar-wrap { background:var(--card2); border-radius:8px; height:6px; margin-bottom:24px; overflow:hidden; }
+  .progress-bar { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent2)); border-radius:8px; transition:width .4s; }
+
+  /* STATS STRIP */
+  .stats-strip { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+  .stat-box {
+    flex:1; min-width:120px; background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px; text-align:center;
+  }
+  .stat-box .val { font-size:22px; font-weight:800; font-family:var(--mono); }
+  .stat-box .lbl { font-size:11px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:.5px; }
+  .stat-box.green .val { color:var(--green); }
+  .stat-box.red .val { color:var(--red); }
+  .stat-box.yellow .val { color:var(--yellow); }
+  .stat-box.blue .val { color:var(--accent); }
+
+  /* QUESTION CARD */
+  .q-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:24px; margin-bottom:20px; position:relative; overflow:hidden;
+  }
+  .q-card::before {
+    content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+    background:linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+  .q-meta { display:flex; gap:10px; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+  .q-num { font-family:var(--mono); font-size:11px; color:var(--muted); }
+  .q-tag {
+    font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px;
+    text-transform:uppercase; letter-spacing:.5px;
+  }
+  .tag-prog { background:#0c2a3e; color:var(--accent); }
+  .tag-apt { background:#1e1040; color:#a78bfa; }
+  .tag-easy { background:#052e16; color:var(--green); }
+  .tag-med { background:#451a03; color:var(--yellow); }
+  .tag-hard { background:#2d0a0a; color:var(--red); }
+
+  .q-text { font-size:15px; color:#f1f5f9; margin-bottom:18px; line-height:1.7; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background:#060c14; border:1px solid #1e3a5f; border-radius:8px;
+    padding:16px; margin:12px 0 16px; font-family:var(--mono);
+    font-size:13px; line-height:1.8; overflow-x:auto;
+    color:#cdd6f4;
+  }
+  .kw { color:#89b4fa; } .fn { color:#a6e3a1; } .str { color:#f38ba8; }
+  .num { color:#fab387; } .cmt { color:#6c7086; font-style:italic; }
+  .op { color:#cba6f7; }
+
+  /* OPTIONS */
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .opt {
+    display:flex; align-items:flex-start; gap:12px;
+    background:var(--card2); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; cursor:pointer; transition:all .2s; user-select:none;
+  }
+  .opt:hover { border-color:var(--accent); background:#0d1e35; }
+  .opt.selected { border-color:var(--accent2); background:#1a0a30; }
+  .opt.correct { border-color:var(--green) !important; background:#051a0e !important; }
+  .opt.wrong { border-color:var(--red) !important; background:#1a0505 !important; }
+  .opt-letter {
+    width:28px; height:28px; min-width:28px; border-radius:6px;
+    background:var(--border); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12px; font-weight:700; color:var(--muted);
+    transition:all .2s;
+  }
+  .opt.selected .opt-letter { background:var(--accent2); color:#fff; }
+  .opt.correct .opt-letter { background:var(--green); color:#fff; }
+  .opt.wrong .opt-letter { background:var(--red); color:#fff; }
+  .opt-text { font-size:14px; color:var(--text); line-height:1.5; padding-top:2px; }
+  .opt-code { font-family:var(--mono); font-size:13px; }
+
+  /* EXPLANATION */
+  .explanation {
+    margin-top:16px; padding:14px 16px; background:#05140a;
+    border:1px solid #0d3320; border-radius:10px; display:none;
+  }
+  .explanation.show { display:block; }
+  .explanation .exp-title { color:var(--green); font-size:12px; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+  .explanation p { font-size:13px; color:#94a3b8; line-height:1.7; }
+  .explanation code { font-family:var(--mono); background:#0a1f12; padding:1px 5px; border-radius:3px; color:#86efac; font-size:12px; }
+
+  /* BUTTONS */
+  .btn {
+    padding:11px 22px; border-radius:8px; font-weight:700; font-size:13px;
+    cursor:pointer; border:none; font-family:var(--sans); transition:all .2s;
+  }
+  .btn-primary { background:linear-gradient(135deg, var(--accent), #0099cc); color:#000; }
+  .btn-primary:hover { opacity:.85; transform:translateY(-1px); }
+  .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
+  .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-danger { background:transparent; border:1px solid var(--red); color:var(--red); }
+
+  .q-actions { display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+
+  /* NAVIGATION */
+  .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:24px; flex-wrap:wrap; gap:12px; }
+  .nav-dots { display:flex; gap:6px; flex-wrap:wrap; }
+  .nav-dot {
+    width:28px; height:28px; border-radius:6px; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-family:var(--mono); color:var(--muted); cursor:pointer;
+    transition:all .15s;
+  }
+  .nav-dot.answered { background:var(--accent2); border-color:var(--accent2); color:#fff; }
+  .nav-dot.current { border-color:var(--accent); color:var(--accent); }
+  .nav-dot.correct-dot { background:var(--green); border-color:var(--green); color:#fff; }
+  .nav-dot.wrong-dot { background:var(--red); border-color:var(--red); color:#fff; }
+
+  /* RESULTS SCREEN */
+  #results { text-align:center; padding:40px 24px; }
+  .result-score {
+    font-size:72px; font-weight:800; font-family:var(--mono);
+    background:linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .result-max { font-size:24px; color:var(--muted); font-family:var(--mono); }
+  .result-msg { font-size:18px; margin:16px 0 32px; color:var(--text); }
+  .result-grid { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+  .result-item { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px 28px; }
+  .result-item .rv { font-size:28px; font-weight:800; font-family:var(--mono); }
+  .result-item .rl { font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
+
+  /* TOPICS OVERVIEW PAGE */
+  .topic-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
+  .topic-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px;
+    cursor:pointer; transition:all .2s;
+  }
+  .topic-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .topic-card h3 { font-size:16px; font-weight:800; margin-bottom:6px; }
+  .topic-card p { font-size:13px; color:var(--muted); line-height:1.6; }
+  .topic-card .tc-count { font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:10px; }
+
+  /* CHEAT SHEET */
+  .cheat-section { margin-bottom:28px; }
+  .cheat-section h3 { font-size:15px; font-weight:800; color:var(--accent); margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px; }
+  .cheat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+  .cheat-item { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .cheat-item h4 { font-size:13px; font-weight:700; color:var(--yellow); margin-bottom:6px; }
+  .cheat-item p, .cheat-item li { font-size:12px; color:#94a3b8; line-height:1.7; }
+  .cheat-item ul { padding-left:16px; }
+  .cheat-item code { font-family:var(--mono); background:#0d1b2e; padding:1px 4px; border-radius:3px; color:var(--accent); font-size:11px; }
+
+  .tip-box { background:#0c1a0c; border:1px solid #1a3a1a; border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+  .tip-box p { font-size:13px; color:#86efac; }
+  .tip-box strong { color:var(--green); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-badge">ULKASEMI</div>
+    <div>
+      <h1>Section A — Practice Bank</h1>
+      <p>Programming (15Q) + Aptitude (5Q) · Negative Marking: −1</p>
+    </div>
+  </div>
+  <div class="exam-info">
+    <div class="info-chip">📅 Exam: 05 Mar 2026</div>
+    <div class="info-chip">⏱ 90 mins · 50 MCQ</div>
+    <div class="info-chip">✏️ +2 / −1</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('practice')">🎯 Practice</div>
+  <div class="tab" onclick="switchTab('cheatsheet')">📋 Quick Reference</div>
+</div>
+
+<main>
+  <!-- PRACTICE PANEL -->
+  <div class="panel active" id="panel-practice">
+    <div id="quiz-screen">
+      <div class="stats-strip">
+        <div class="stat-box blue"><div class="val" id="s-total">0</div><div class="lbl">Answered</div></div>
+        <div class="stat-box green"><div class="val" id="s-correct">0</div><div class="lbl">Correct</div></div>
+        <div class="stat-box red"><div class="val" id="s-wrong">0</div><div class="lbl">Wrong</div></div>
+        <div class="stat-box yellow"><div class="val" id="s-score">0</div><div class="lbl">Score</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+
+      <div id="q-container"></div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="navigate(-1)">← Prev</button>
+        <div class="nav-dots" id="nav-dots"></div>
+        <button class="btn btn-primary" onclick="navigate(1)">Next →</button>
+      </div>
+      <div style="text-align:center; margin-top:20px;">
+        <button class="btn btn-danger" onclick="showResults()">Finish & See Results</button>
+      </div>
+    </div>
+
+    <div id="results" style="display:none;">
+      <div class="result-score" id="r-score">0</div>
+      <div class="result-max">/ <span id="r-max">0</span> marks</div>
+      <div class="result-msg" id="r-msg"></div>
+      <div class="result-grid">
+        <div class="result-item"><div class="rv" style="color:var(--green)" id="r-correct">0</div><div class="rl">Correct</div></div>
+        <div class="result-item"><div class="rv" style="color:var(--red)" id="r-wrong">0</div><div class="rl">Wrong (−1 each)</div></div>
+        <div class="result-item"><div class="rv" style="color:var(--muted)" id="r-skip">0</div><div class="rl">Skipped</div></div>
+        <div class="result-item"><div class="rv" style="color:var(--yellow)" id="r-acc">0%</div><div class="rl">Accuracy</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="resetQuiz()">🔄 Retake Quiz</button>
+    </div>
+  </div>
+
+  <!-- CHEAT SHEET PANEL -->
+  <div class="panel" id="panel-cheatsheet">
+    <div class="tip-box"><p><strong>💡 Exam Strategy:</strong> With −1 negative marking, only answer when ≥70% confident. Leaving blank = 0, wrong = −1. Target 100% on questions you know!</p></div>
+
+    <div class="cheat-section">
+      <h3>🔢 Python Essentials</h3>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>List Operations</h4><ul>
+          <li><code>lst[-1]</code> → last element</li>
+          <li><code>lst[1:3]</code> → index 1,2 only</li>
+          <li><code>lst[::-1]</code> → reversed list</li>
+          <li><code>len(lst)</code> → length</li>
+          <li><code>lst.append(x)</code> → add to end</li>
+          <li><code>lst.pop()</code> → remove last</li>
+        </ul></div>
+        <div class="cheat-item"><h4>String Tricks</h4><ul>
+          <li><code>"abc"[1]</code> → <code>'b'</code></li>
+          <li><code>"ab" * 3</code> → <code>'ababab'</code></li>
+          <li><code>"A".lower()</code> → <code>'a'</code></li>
+          <li><code>"a,b".split(",")</code> → <code>['a','b']</code></li>
+          <li><code>f"{x:.2f}"</code> → 2 decimal float</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Common Gotchas</h4><ul>
+          <li><code>range(5)</code> = 0,1,2,3,4 (not 5)</li>
+          <li><code>5//2 = 2</code>, <code>5%2 = 1</code></li>
+          <li><code>bool(0) = False</code>, <code>bool("") = False</code></li>
+          <li>Mutable default args are shared!</li>
+          <li><code>is</code> checks identity, <code>==</code> checks value</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Complexity Cheatsheet</h4><ul>
+          <li>List access: O(1)</li>
+          <li>List search: O(n)</li>
+          <li>Dict lookup: O(1) avg</li>
+          <li>Sorting: O(n log n)</li>
+          <li>Binary search: O(log n)</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="cheat-section">
+      <h3>⚙️ C/C++ Quick Reference</h3>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Pointers</h4><ul>
+          <li><code>int *p = &x</code> → p holds address of x</li>
+          <li><code>*p</code> → dereference (value at address)</li>
+          <li><code>p++</code> → next int address (+4 bytes)</li>
+          <li>Array name = pointer to first element</li>
+          <li><code>NULL</code> pointer = address 0</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Operators & Precedence</h4><ul>
+          <li><code>++i</code> pre-increment (increment first)</li>
+          <li><code>i++</code> post-increment (use then increment)</li>
+          <li><code>a & b</code> bitwise AND</li>
+          <li><code>a | b</code> bitwise OR</li>
+          <li><code>a ^ b</code> bitwise XOR</li>
+          <li><code>a << 1</code> = a × 2</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Data Types (32-bit)</h4><ul>
+          <li><code>int</code>: 4 bytes, −2³¹ to 2³¹−1</li>
+          <li><code>char</code>: 1 byte</li>
+          <li><code>float</code>: 4 bytes</li>
+          <li><code>double</code>: 8 bytes</li>
+          <li><code>short</code>: 2 bytes</li>
+          <li>Integer overflow wraps around!</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Common Output Traps</h4><ul>
+          <li><code>printf("%d", 5/2)</code> → 2 (integer div)</li>
+          <li><code>printf("%f", 5/2)</code> → 2.0 (still int div!)</li>
+          <li><code>printf("%f", 5.0/2)</code> → 2.5</li>
+          <li>Uninitialized vars have garbage values</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="cheat-section">
+      <h3>🧠 Aptitude Formulas</h3>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Number Series Patterns</h4><ul>
+          <li>Arithmetic: constant difference</li>
+          <li>Geometric: constant ratio</li>
+          <li>Fibonacci: each = sum of prev two</li>
+          <li>Squares: 1,4,9,16,25,36...</li>
+          <li>Primes: 2,3,5,7,11,13,17...</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Percentage & Ratio</h4><ul>
+          <li>% change = (new−old)/old × 100</li>
+          <li>If A:B = 3:4 and total=70 → A=30, B=40</li>
+          <li>Simple Interest = P×R×T/100</li>
+          <li>20% of 150 = 30</li>
+          <li>X is 25% more than Y → X = 1.25Y</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Work & Time</h4><ul>
+          <li>A does in n days → rate = 1/n per day</li>
+          <li>A+B together: 1/a + 1/b per day</li>
+          <li>Combined time = ab/(a+b)</li>
+          <li>Speed = Distance / Time</li>
+          <li>Avg speed = 2v₁v₂/(v₁+v₂) for equal dist</li>
+        </ul></div>
+        <div class="cheat-item"><h4>Probability & Logic</h4><ul>
+          <li>P(A) = favorable / total outcomes</li>
+          <li>P(A∪B) = P(A)+P(B)−P(A∩B)</li>
+          <li>All A are B + All B are C → All A are C</li>
+          <li>Deductive: general → specific</li>
+          <li>Inductive: specific → general</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const ALL_QUESTIONS = [
+  // ── PROGRAMMING ──
+  {
+    id:1, topic:'Programming', difficulty:'Easy', lang:'Python',
+    text:'What is the output of the following Python code?',
+    code:`x = [1, 2, 3, 4, 5]
+print(x[1:4])`,
+    options:['[1, 2, 3]','[2, 3, 4]','[2, 3, 4, 5]','[1, 2, 3, 4]'],
+    answer:1,
+    explanation:'Python slicing <code>x[1:4]</code> returns elements at indices 1, 2, 3 (start inclusive, end exclusive). So x[1]=2, x[2]=3, x[3]=4 → <code>[2, 3, 4]</code>.'
+  },
+  {
+    id:2, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What will this Python code print?',
+    code:`def foo(a, b=[]):
+    b.append(a)
+    return b
+
+print(foo(1))
+print(foo(2))`,
+    options:['[1]  [2]','[1]  [1, 2]','[1, 2]  [1, 2]','Error'],
+    answer:1,
+    explanation:'Mutable default arguments in Python are created ONCE and shared across all calls. The list <code>b=[]</code> persists between calls. First call appends 1 → [1]. Second call appends 2 to the same list → [1, 2].'
+  },
+  {
+    id:3, topic:'Programming', difficulty:'Easy', lang:'Python',
+    text:'What is the output?',
+    code:`print(type(5/2))
+print(type(5//2))`,
+    options:["<class 'int'>  <class 'int'>","<class 'float'>  <class 'int'>","<class 'float'>  <class 'float'>","<class 'int'>  <class 'float'>"],
+    answer:1,
+    explanation:'In Python 3, <code>/</code> always returns a float (5/2 = 2.5 → float). <code>//</code> is floor division and returns an int when both operands are integers (5//2 = 2 → int).'
+  },
+  {
+    id:4, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What does this code output?',
+    code:`x = "Hello"
+x[0] = "J"
+print(x)`,
+    options:['Jello','Hello','Error — strings are immutable','JHello'],
+    answer:2,
+    explanation:'Python strings are <strong>immutable</strong>. You cannot change individual characters using index assignment. This raises a <code>TypeError: \'str\' object does not support item assignment</code>.'
+  },
+  {
+    id:5, topic:'Programming', difficulty:'Hard', lang:'Python',
+    text:'What is the output of this code?',
+    code:`def gen():
+    for i in range(3):
+        yield i * 2
+
+g = gen()
+print(next(g))
+print(next(g))
+print(sum(g))`,
+    options:['0  2  4','0  2  6','0  2  8','0  2  4  Error'],
+    answer:1,
+    explanation:'<code>gen()</code> is a generator yielding 0, 2, 4. <code>next(g)</code> → 0, then <code>next(g)</code> → 2. After two next() calls, only 4 remains in the generator. <code>sum(g)</code> consumes the rest → sum([4]) = 4. Output: 0, 2, 4.'
+  },
+  {
+    id:6, topic:'Programming', difficulty:'Easy', lang:'C',
+    text:'What is the output of this C code?',
+    code:`#include <stdio.h>
+int main() {
+    int i = 5;
+    printf("%d %d", i++, ++i);
+    return 0;
+}`,
+    options:['5 7','5 6','6 7','Undefined Behavior'],
+    answer:3,
+    explanation:'Modifying <code>i</code> twice in a single expression without a sequence point is <strong>undefined behavior</strong> in C. The compiler can produce any output. This is a classic trick question — always watch for multiple modifications to the same variable in one expression.'
+  },
+  {
+    id:7, topic:'Programming', difficulty:'Medium', lang:'C',
+    text:'What does this C code print?',
+    code:`int arr[] = {10, 20, 30, 40, 50};
+int *p = arr;
+p += 2;
+printf("%d", *p);`,
+    options:['10','20','30','40'],
+    answer:2,
+    explanation:'<code>arr</code> points to the first element (10). <code>p = arr</code> so p points to arr[0]. <code>p += 2</code> advances the pointer by 2 integers, pointing to arr[2] = 30. <code>*p</code> dereferences it → 30.'
+  },
+  {
+    id:8, topic:'Programming', difficulty:'Easy', lang:'Python',
+    text:'What is the result of this Python expression?',
+    code:`print(2 ** 3 ** 2)`,
+    options:['64','512','8','729'],
+    answer:1,
+    explanation:'Python\'s exponentiation operator <code>**</code> is right-associative. So <code>2 ** 3 ** 2</code> = <code>2 ** (3 ** 2)</code> = <code>2 ** 9</code> = 512. This is a common trick — don\'t evaluate left-to-right!'
+  },
+  {
+    id:9, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What is the output?',
+    code:`d = {'a': 1, 'b': 2, 'c': 3}
+print([k for k, v in d.items() if v > 1])`,
+    options:["['a']","['b', 'c']","['a', 'b', 'c']","[2, 3]"],
+    answer:1,
+    explanation:'This is a list comprehension that filters dictionary keys where the value is greater than 1. <code>\'b\'</code> has value 2 > 1 and <code>\'c\'</code> has value 3 > 1. So the result is <code>[\'b\', \'c\']</code>.'
+  },
+  {
+    id:10, topic:'Programming', difficulty:'Medium', lang:'Algorithm',
+    text:'Which sorting algorithm has the best average-case time complexity?',
+    options:['Bubble Sort — O(n²)','Insertion Sort — O(n²)','Merge Sort — O(n log n)','Selection Sort — O(n²)'],
+    answer:2,
+    explanation:'Merge Sort achieves O(n log n) in all cases (best, average, worst). Bubble, Insertion, and Selection Sort are all O(n²) in average/worst case. Quick Sort also averages O(n log n) but has O(n²) worst case.'
+  },
+  {
+    id:11, topic:'Programming', difficulty:'Hard', lang:'Python',
+    text:'What is the output?',
+    code:`class A:
+    x = 5
+    def __init__(self):
+        self.x = 10
+
+a = A()
+print(A.x, a.x)`,
+    options:['5 5','10 10','5 10','10 5'],
+    answer:2,
+    explanation:'<code>A.x = 5</code> is a class variable shared across all instances. <code>self.x = 10</code> in <code>__init__</code> creates an instance variable that shadows the class variable. <code>A.x</code> = 5 (class level unchanged), <code>a.x</code> = 10 (instance level).'
+  },
+  {
+    id:12, topic:'Programming', difficulty:'Easy', lang:'C',
+    text:'How many bytes does a typical int occupy on a 64-bit system?',
+    options:['2 bytes','4 bytes','8 bytes','Depends on the compiler'],
+    answer:3,
+    explanation:'On most modern 64-bit systems, <code>int</code> is typically 4 bytes (32 bits), regardless of the OS being 64-bit. The pointer size changes (8 bytes for 64-bit), but <code>int</code> remains 4 bytes by default in most compilers including GCC and MSVC.'
+  },
+  {
+    id:13, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What is the output of this code?',
+    code:`a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)`,
+    options:['[1, 2, 3]','[1, 2, 3, 4]','[4]','Error'],
+    answer:1,
+    explanation:'In Python, <code>b = a</code> does NOT copy the list — both variables point to the same list object. So appending to <code>b</code> also modifies <code>a</code>. To make a copy, use <code>b = a.copy()</code> or <code>b = a[:]</code>.'
+  },
+  {
+    id:14, topic:'Programming', difficulty:'Hard', lang:'Python',
+    text:'What does this recursive function return for <code>f(4)</code>?',
+    code:`def f(n):
+    if n <= 1:
+        return 1
+    return f(n-1) + f(n-2)`,
+    options:['3','5','8','4'],
+    answer:1,
+    explanation:'This is the Fibonacci function. f(1)=1, f(2)=f(1)+f(0)=1+1=2, f(3)=f(2)+f(1)=2+1=3, f(4)=f(3)+f(2)=3+2=5. So f(4) returns 5.'
+  },
+  {
+    id:15, topic:'Programming', difficulty:'Medium', lang:'Algorithm',
+    text:'What is the time complexity of binary search on a sorted array of n elements?',
+    options:['O(n)','O(n log n)','O(log n)','O(1)'],
+    answer:2,
+    explanation:'Binary search halves the search space on each step. With n elements, it takes at most log₂(n) steps. Thus time complexity is O(log n). This is why it\'s so efficient — searching 1 billion elements takes only ~30 steps!'
+  },
+  // ── APTITUDE ──
+  {
+    id:16, topic:'Aptitude', difficulty:'Easy',
+    text:'Find the next number in the series: 2, 6, 12, 20, 30, ?',
+    options:['42','40','44','36'],
+    answer:0,
+    explanation:'Differences: 4, 6, 8, 10 — increasing by 2 each time. Next difference = 12. So 30 + 12 = 42. Pattern: n(n+1) — 1×2=2, 2×3=6, 3×4=12, 4×5=20, 5×6=30, 6×7=42.'
+  },
+  {
+    id:17, topic:'Aptitude', difficulty:'Medium',
+    text:'A and B can complete a task in 12 and 18 days respectively. How many days will they take working together?',
+    options:['7.2 days','6 days','8 days','7 days'],
+    answer:0,
+    explanation:'A\'s rate = 1/12 per day. B\'s rate = 1/18 per day. Combined = 1/12 + 1/18 = 3/36 + 2/36 = 5/36 per day. Time = 36/5 = 7.2 days.'
+  },
+  {
+    id:18, topic:'Aptitude', difficulty:'Easy',
+    text:'If 40% of a number is 80, what is 25% of that number?',
+    options:['40','50','60','55'],
+    answer:1,
+    explanation:'40% of x = 80 → x = 200. 25% of 200 = 200 × 0.25 = 50.'
+  },
+  {
+    id:19, topic:'Aptitude', difficulty:'Medium',
+    text:'All engineers are logical. Some logical people are creative. Which conclusion is DEFINITELY true?',
+    options:['All engineers are creative','Some engineers are creative','All creative people are engineers','Some engineers are logical'],
+    answer:3,
+    explanation:'"All engineers are logical" directly implies "some engineers are logical" (a subset statement). We CANNOT conclude all or some engineers are creative — the "some logical → creative" link doesn\'t guarantee engineers fall in that overlap.'
+  },
+  {
+    id:20, topic:'Aptitude', difficulty:'Hard',
+    text:'A train 150m long passes a pole in 15 seconds. How long will it take to pass a platform 300m long?',
+    options:['30 seconds','45 seconds','40 seconds','35 seconds'],
+    answer:1,
+    explanation:'Train speed = 150/15 = 10 m/s. To pass a 300m platform, total distance = train length + platform = 150+300 = 450m. Time = 450/10 = 45 seconds.'
+  },
+  // ── BONUS PROGRAMMING ──
+  {
+    id:21, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What is the output?',
+    code:`x = 10
+def change():
+    x = 20
+change()
+print(x)`,
+    options:['20','10','None','Error'],
+    answer:1,
+    explanation:'Inside <code>change()</code>, <code>x = 20</code> creates a NEW local variable — it does NOT modify the global <code>x</code>. To modify the global, you\'d need <code>global x</code> inside the function. So the global x remains 10.'
+  },
+  {
+    id:22, topic:'Programming', difficulty:'Easy', lang:'Python',
+    text:'Which data structure uses LIFO (Last In, First Out) order?',
+    options:['Queue','Stack','Linked List','Tree'],
+    answer:1,
+    explanation:'A <strong>Stack</strong> follows LIFO — the last element pushed is the first one popped. Think of a stack of plates. A Queue uses FIFO (First In, First Out). In Python, stacks can be implemented with a list using <code>.append()</code> and <code>.pop()</code>.'
+  },
+  {
+    id:23, topic:'Programming', difficulty:'Hard', lang:'C',
+    text:'What is the output of this C code?',
+    code:`int x = 5;
+int y = x << 2;
+printf("%d", y);`,
+    options:['10','20','25','40'],
+    answer:1,
+    explanation:'Left shift <code><< 2</code> multiplies by 2² = 4. So 5 × 4 = 20. In binary: 5 = 00000101, left shift by 2 → 00010100 = 20. Bit shifting is faster than multiplication and commonly used in embedded/hardware systems.'
+  },
+  {
+    id:24, topic:'Programming', difficulty:'Medium', lang:'Python',
+    text:'What is the output?',
+    code:`print(bool(0), bool(""), bool([]))
+print(bool(1), bool("a"), bool([0]))`,
+    options:['True True True / False False False','False False False / True True True','True False True / False True False','False True False / True False True'],
+    answer:1,
+    explanation:'In Python, falsy values include: <code>0</code>, empty string <code>""</code>, empty list <code>[]</code>, <code>None</code>, <code>False</code>. Everything else is truthy. <code>[0]</code> is a non-empty list (contains one element: 0) → truthy.'
+  },
+  {
+    id:25, topic:'Programming', difficulty:'Medium', lang:'Algorithm',
+    text:'What is the space complexity of a recursive function that makes n recursive calls, each with O(1) extra space?',
+    options:['O(1)','O(log n)','O(n)','O(n²)'],
+    answer:2,
+    explanation:'Each recursive call adds a stack frame to the call stack. With n recursive calls, the call stack holds n frames simultaneously at max depth. So space complexity = O(n) due to the call stack, even if each frame uses O(1) space.'
+  }
+];
+
+let currentQ = 0;
+let userAnswers = new Array(ALL_QUESTIONS.length).fill(null);
+let revealed = new Array(ALL_QUESTIONS.length).fill(false);
+
+function init() {
+  renderQuestion();
+  renderNavDots();
+  updateStats();
+}
+
+function renderQuestion() {
+  const q = ALL_QUESTIONS[currentQ];
+  const isRevealed = revealed[currentQ];
+  const selected = userAnswers[currentQ];
+
+  let codeHtml = '';
+  if (q.code) {
+    const highlighted = q.code
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/(def|class|return|if|else|elif|for|while|import|from|in|not|and|or|yield|lambda|with|as|pass|break|continue|global|print|int|void|char|float|double|printf|include|main)\b/g,'<span class="kw">$1</span>')
+      .replace(/(#[^\n]*)/g,'<span class="cmt">$1</span>')
+      .replace(/("[^"]*"|'[^']*')/g,'<span class="str">$1</span>')
+      .replace(/\b(\d+)\b/g,'<span class="num">$1</span>');
+    codeHtml = `<div class="code-block">${highlighted}</div>`;
+  }
+
+  const optionsHtml = q.options.map((opt, i) => {
+    let cls = 'opt';
+    if (isRevealed) {
+      if (i === q.answer) cls += ' correct';
+      else if (i === selected && selected !== q.answer) cls += ' wrong';
+    } else if (i === selected) cls += ' selected';
+    const letter = ['A','B','C','D'][i];
+    const isCode = opt.includes('O(') || opt.includes('[') || opt.includes('<class');
+    return `<div class="${cls}" onclick="selectOpt(${i})">
+      <div class="opt-letter">${letter}</div>
+      <div class="opt-text ${isCode?'opt-code':''}">${opt}</div>
+    </div>`;
+  }).join('');
+
+  const expHtml = `<div class="explanation ${isRevealed?'show':''}">
+    <div class="exp-title">✅ Explanation</div>
+    <p>${q.explanation}</p>
+  </div>`;
+
+  const btnLabel = isRevealed ? '✓ Revealed' : (selected !== null ? 'Check Answer' : 'Select an option first');
+  const btnDisabled = selected === null || isRevealed ? 'disabled style="opacity:.5;cursor:not-allowed"' : '';
+
+  document.getElementById('q-container').innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Q${currentQ+1} of ${ALL_QUESTIONS.length}</span>
+        <span class="q-tag tag-${q.topic==='Aptitude'?'apt':'prog'}">${q.topic}</span>
+        ${q.lang ? `<span class="q-tag" style="background:#0d1f10;color:#6ee7b7">${q.lang}</span>` : ''}
+        <span class="q-tag tag-${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+      ${codeHtml}
+      <div class="options">${optionsHtml}</div>
+      ${expHtml}
+      <div class="q-actions">
+        <button class="btn btn-primary" onclick="revealAnswer()" ${btnDisabled}>🔍 Check Answer</button>
+        <button class="btn btn-ghost" onclick="navigate(1)">Skip →</button>
+      </div>
+    </div>`;
+
+  document.getElementById('prog-bar').style.width = `${((currentQ+1)/ALL_QUESTIONS.length)*100}%`;
+}
+
+function selectOpt(i) {
+  if (revealed[currentQ]) return;
+  userAnswers[currentQ] = i;
+  renderQuestion();
+}
+
+function revealAnswer() {
+  if (userAnswers[currentQ] === null || revealed[currentQ]) return;
+  revealed[currentQ] = true;
+  renderQuestion();
+  updateStats();
+  renderNavDots();
+}
+
+function navigate(dir) {
+  currentQ = Math.max(0, Math.min(ALL_QUESTIONS.length-1, currentQ+dir));
+  renderQuestion();
+  renderNavDots();
+}
+
+function goToQ(i) {
+  currentQ = i;
+  renderQuestion();
+  renderNavDots();
+}
+
+function renderNavDots() {
+  document.getElementById('nav-dots').innerHTML = ALL_QUESTIONS.map((q,i) => {
+    let cls = 'nav-dot';
+    if (i === currentQ) cls += ' current';
+    else if (revealed[i]) {
+      cls += userAnswers[i] === q.answer ? ' correct-dot' : ' wrong-dot';
+    } else if (userAnswers[i] !== null) cls += ' answered';
+    return `<div class="${cls}" onclick="goToQ(${i})">${i+1}</div>`;
+  }).join('');
+}
+
+function updateStats() {
+  const answered = revealed.filter(Boolean);
+  const correct = answered.filter((r,i) => r && userAnswers[i] === ALL_QUESTIONS[i].answer).length;
+  const wrong = answered.filter((r,i) => r && userAnswers[i] !== ALL_QUESTIONS[i].answer).length;
+  const score = correct * 2 - wrong;
+  document.getElementById('s-total').textContent = answered.length;
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-wrong').textContent = wrong;
+  document.getElementById('s-score').textContent = score;
+}
+
+function showResults() {
+  const revealed_all = revealed.filter(Boolean).length;
+  const correct = revealed.filter((r,i) => r && userAnswers[i] === ALL_QUESTIONS[i].answer).length;
+  const wrong = revealed.filter((r,i) => r && userAnswers[i] !== null && userAnswers[i] !== ALL_QUESTIONS[i].answer).length;
+  const skip = ALL_QUESTIONS.length - correct - wrong;
+  const score = correct * 2 - wrong;
+  const maxScore = ALL_QUESTIONS.length * 2;
+  const acc = revealed_all > 0 ? Math.round((correct/revealed_all)*100) : 0;
+  const msgs = ['Keep going — revisit the explanations!','Good effort! Review the tricky ones.','Solid performance!','Great work!','Excellent — exam ready! 🎉'];
+  const msgIdx = Math.min(4, Math.floor(score / (maxScore/5)));
+  document.getElementById('r-score').textContent = score;
+  document.getElementById('r-max').textContent = maxScore;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-skip').textContent = skip;
+  document.getElementById('r-acc').textContent = acc + '%';
+  document.getElementById('r-msg').textContent = msgs[Math.max(0,msgIdx)];
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+}
+
+function resetQuiz() {
+  userAnswers = new Array(ALL_QUESTIONS.length).fill(null);
+  revealed = new Array(ALL_QUESTIONS.length).fill(false);
+  currentQ = 0;
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  renderQuestion(); renderNavDots(); updateStats();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['practice','cheatsheet'][i]===name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+init();
+</script>
+</body>
+</html>
